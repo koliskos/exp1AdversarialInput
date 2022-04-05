@@ -183,15 +183,15 @@ for app in applications:
     write.writerow(a)
 
 
-def conversion(individ_col):
-    individ_col= individ_col
+# def conversion(individ_col):
+#     individ_col= individ_col
 
 
 
-in_from_csv = pd.read_csv('results/r.csv')
-for i in range(numIndividuals):
-    current= in_from_csv.loc[i].at["Applicant Information"]
-    print(current)
+# in_from_csv = pd.read_csv('results/r.csv')
+# for i in range(numIndividuals):
+#     current= in_from_csv.loc[i].at["Applicant Information"]
+#     print(current)
 
 # df['Applicant Information'] = df['Applicant Information'].map(conversion)
 # #write.writerows(applications)
