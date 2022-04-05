@@ -154,7 +154,7 @@ f = open('results/r.csv', 'w') #write
 #df['col2'] = df['col2'].apply(literal_eval) try to use this to fix dataframe problem
 # create csv writer
 write = csv.writer(f)
-write.writerow(counter)
+write.writerow([counter])
 title = ['Num Applicant','Applicant Information', 'Property', 'Lender', 'Approval Status']
 write.writerow(title)
 for app in applications:
