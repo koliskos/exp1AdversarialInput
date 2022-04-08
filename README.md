@@ -1,7 +1,7 @@
 # exp1AdversarialInput
-First experiment of adversarial input project.
+First experiment of adversarial input project. Uses *tabular data*
 
-Essentially what we want to show is that when you smooth, you might be putting minorities (as defined above) have less of a right to indiviualism (and therefore can be at more of a disadvantage), since their data, which is outlier data, is disproportionately affected by the smoothing process. This means thatthey will be lumped into D (D = denial... defined below) instead of their deserved A outcome (A = approval... defined below). 
+Essentially what we want to show is that when you smooth (on an imbalanced dataset? It's not necessarily "imbalanced" but more like: a dataset that represents a status quo which the model would make biased decisions off of), you might be putting minorities (as defined above) have less of a right to indiviualism (and therefore can be at more of a disadvantage), since their data, which is outlier data, is disproportionately affected by the smoothing process. This means thatthey will be lumped into D (D = denial... defined below) instead of their deserved A outcome (A = approval... defined below). 
 
 Can we measure the L2 norm between a bad output (ex: denial on a home loan application) and a better counterfactual (approval on a home loan) and show that for people in a minority (DEF {1} not minority as in marginalized group but minority as in an individual who may share features with a group that generally achieves outcome D, but they themselves deserve a different, less common output, A), the L2 norm is greater when the smoothing occurs vs the L2 norm is smaller (ie theoutput is closer to the better outcome for minority applicant) when smoothing doesnt occur, since the minorities are the ones smoothed over.
 
