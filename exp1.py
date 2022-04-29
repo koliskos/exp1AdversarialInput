@@ -1,37 +1,41 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
 import random
+import pandas as pd
 
 #HYPERPARAMS
 # K = 5;  # number of applicant clusters (tune these hyperparams)
 # L = 3;  # number of property characteristics (tune these hyperparams)
 # d1 = 10;  # dimension of applicant demographics
 # d2 = 5;  # dimension of property characteristics
+# high = 10
+# low = 2
 
-def generateM1():
+def generateM1(K,d1):
     #********* randomly generate M1, which is a K x 10-dimensional (d1-D) points which will serve as the centers of the clusters
     clusterCenterRange= 100
     M1 = clusterCenterRange*np.random.uniform(-1, 1, size=(K,d1)) #clusterCenterRange affects the vals inside matrix
     return M1
 
-def generateM2():
+def generateM2(L,d2):
     #********* randomly generate M2, which is an L x 5-dimensional (d2-D) points which will serve as the centers of the clusters
+    clusterCenterRange= 100
     M2 = clusterCenterRange*np.random.uniform(-1, 1, size=(L,d2)) #clusterCenterRange affects the vals inside matrix
     return M2
 
-def generateS1():
+def generateS1(K,d1):
     #********* randomly generate S1, which has values of the std of each cluster???
     clusterStDevRange= 10
     S1 = clusterStDevRange*np.random.uniform(0, 1, size=(K,d1)) #clusterCenterRange affects the vals inside matrix
     return S1
 
-def generateS2():
+def generateS2(L,d2):
     #********* randomly generate S2
+    clusterStDevRange= 10
     S2 = clusterStDevRange*np.random.uniform(0, 1, size=(L,d2)) #clusterCenterRange affects the vals inside matrix
     return S2
 
-def generateN1(low, high):
+def generateN1(low, high, K):
     N1 = []
     for num in range(K):
         x = random.randint(low,high)
@@ -39,7 +43,7 @@ def generateN1(low, high):
     N1=np.array(N1)
     return N1
 
-def generateN2(low,high):
+def generateN2(low,high, L):
     N2 = []
     for num in range(L):
         x = random.randint(low,high)
@@ -67,15 +71,16 @@ def makePropClusters(L, N2, d2, M2, S2):
         U[clusterNum]=propertyCluster
     return U
 
-def makeApps(N1, U, V):
+def makeApps(N1, U, V, d1):
     #we have 2 matrices, V and U. we want to randomly match each entry in U to an entry in V.
     #so we want to iterate through each individual from each cluster from V.
     #for each of these individuals, we randomly select a property from U, the np array containing the clusters of properties
     numIndividuals = np.sum(N1)
     applications = []
     lenderArray = np.array([0,1,2,3])
+    approvalArray = np.array([0,1])
     allClusters = V.keys()
-    print("print")
+    counter = 0
     #because appending to numpy arrays is slow, will make list first then use it to construct an np.array
     for clusterName in allClusters:
 
@@ -90,29 +95,45 @@ def makeApps(N1, U, V):
             randomPropInd = random.randint(0,len(randomPropCluster)-1)
             randomProperty = randomPropCluster[randomPropInd] #replace =True means that the same property can be selected multiple times
 #             print(randomProperty)
+            counter=counter+1
             randomLender = np.random.choice(lenderArray, replace=True)
-            newTup = (individual, randomProperty, randomLender)
-            applications.append((newTup))  
-            return applications
-        
+            randomApproval = np.random.choice(approvalArray, replace=True) #np.random.choice generates samples from uniform random sample
+
+            arrIndividual = np.empty(shape = d1, dtype='f')
+            for ele in individual:
+                np.append(arrIndividual,ele)
+
+            newTup = (counter, arrIndividual, randomProperty, randomLender, randomApproval)
+
+            applications.append((newTup))
+    return applications
+
 def printApps(applications):
     applications=np.array(applications)
     for app in applications:
         print("an app is ")
         print(app)
-        
+
 def main(K, L, d1, d2, high, low):
-    madeM1 = generateM1()
-    madeM2 = generateM2()
-    madeS1 = generateS1()
-    madeS2 = generateS2()
-    madeN1 = generateN1(low, high)
-    madeN2 = generateN2(low, high)
+    madeM1 = generateM1(K,d1)
+    madeM2 = generateM2(L,d2)
+    madeS1 = generateS1(K,d1)
+    madeS2 = generateS2(L,d2)
+    madeN1 = generateN1(low, high, K)
+    madeN2 = generateN2(low, high, L)
     madeV = makeIndivClusters(madeN1, K, d1, madeM1, madeS1)
     madeU = makePropClusters(L, madeN2, d2, madeM2, madeS2)
-    appArr = makeApps(madeN1, madeU, madeV)
+    appArr = makeApps(madeN1, madeU, madeV, d1)
     printApps(appArr)
-    return
+    appNP=np.array(appArr, dtype='O')
+    col_names = ['Num Applicant','Applicant Information', 'Property', 'Lender', 'Approval Status']
+    # appdf = pd.DataFrame(columns = col_names)
+    appdf = pd.DataFrame(appArr, columns=col_names)
+    print(appdf)
+    return appdf
+
+
+main(5, 3, 10, 5, 10, 2)
     
 ############################ TRY 3 on 3/23 ###################
 #       ********* randomly generate M1, which is a K x 10-dimensional (d1-D) points which will serve as the centers of the clusters
