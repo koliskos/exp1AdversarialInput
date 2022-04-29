@@ -8,14 +8,33 @@
 #      3c. 2 layer fully connected NN. For this, will need to normalize all inputs. Then, train x's on y's
 # STEP 4 Visualize Data
 
+import random
+from make_syn_data_V429 import *
+from fix_after_V429 import *
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
 
 #~~~~~~~`STEP 1 Make/download Data ~~~~~~~~
 #make synthetic data by calling exp1.py and saving as unprocessed_csv
-unprocessed_csv = exp1.makeData()
+df = appsAllSet(5, 3, 10, 5, 10, 2)
+print(df)
+#
+# #~~~~~~~`STEP 2 Preprocess ~~~~~~~~
+# # load data to dataframe by using fix_after
 
-#~~~~~~~`STEP 2 Preprocess ~~~~~~~~
-# load data to dataframe by using fix_after
-data = fix_after.process(unprocessed_csv)
+# Run through rows and create one long (concatenated) vector x --> features
+def preprocess():
+    df["x"] = [[0.0]] * df.shape[0]
+    for index, row in df.iterrows():
+        a = df.at[index, 'Applicant Information']
+        b = df.at[index, 'Property']
+        c = df.at[index, 'Lender']
+        abc = np.concatenate((a, b, [c]))
+        df.at[index, 'x'] = abc
+    print(df)
+
+preprocess()
 
 #~~~~~~~`STEP 3 Analyze Data ~~~~~~~~
 #assign data to x and y
